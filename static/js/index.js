@@ -115,6 +115,7 @@ hbnb = {
                     });
                 });
                 hbnb.fetchAndPopulateCountries(); // Fetch and populate countries on initialization
+              
             })
             .catch(error => console.error('Error fetching places:', error));
     },
@@ -263,25 +264,25 @@ hbnb = {
             .then(data => {
                 console.log('Countries data:', data); // Debugging line
                 hbnb.populateCountryFilter(data);
+                hbnb.fetchAndPopulateAmenities(); // Fetch and populate amenities filter
             })
             .catch(error => console.error('Error fetching countries:', error));
     },
   
     populateCountryFilter: function(countries) {
         const select = document.getElementById('destination-filter-select');
-        select.innerHTML = ''; // Clear existing options
+       // select.innerHTML = ''; // Clear existing options
   
-        // Add "All" option
-        const allOption = document.createElement('option');
-        allOption.value = '';
-        allOption.textContent = 'All';
-        select.appendChild(allOption);
+        // // Add "All" option
+        // const allOption = document.createElement('option');
+        // allOption.value = '';
+        // allOption.textContent = 'All';
+        // select.appendChild(allOption);
   
         // Add country options
         
         const countriesSet = new Set(countries.map(country => country.name));
         countriesSet.forEach(country => {
-            console.log(country);
             const option = document.createElement('option');
             option.value = country;
             option.textContent = country;
@@ -319,10 +320,52 @@ hbnb = {
             list.appendChild(card);
         });
     },
-  
 
-
+    fetchAndPopulateAmenities: function() {
+        fetch('/api/v1/amenities')
+            .then(response => response.json())
+            .then(data => {
+                hbnb.populateAmenitiesFilter(data);
+            })
+            .catch(error => console.error('Error fetching amenities:', error));
+    },
     
+    populateAmenitiesFilter: function(amenities) {
+        const amenitiesContainer = document.getElementById('amenities-checkboxes');
+        amenitiesContainer.innerHTML = ''; // Clear existing checkboxes
+
+        // Add amenities checkboxes
+        amenities.forEach(amenity => {
+            const label = document.createElement('label');
+            label.innerHTML = `<input type="checkbox" value="${amenity.id}"> ${amenity.name}`;
+            amenitiesContainer.appendChild(label);
+        });
+
+        // Add Apply Filters button
+        const okButton = document.getElementById('amenities-ok-btn');
+        okButton.addEventListener('click', hbnb.applyAmenitiesFilter);
+    },
+
+    applyAmenitiesFilter: function() {
+        const selectedCheckboxes = Array.from(document.querySelectorAll('#amenities-checkboxes input:checked'));
+        const selectedAmenities = selectedCheckboxes.map(checkbox => checkbox.value);
+
+        if (selectedAmenities.length > 0) {
+            hbnb.fetchAndDisplayHotelsByAmenities(selectedAmenities);
+        } else {
+            hbnb.fetchAndDisplayHotels(); // Display all hotels if no amenities are selected
+        }
+    },
+    
+    fetchAndDisplayHotelsByAmenities: function(amenities) {
+        fetch(`/api/v1/places?amenities=${amenities.join(',')}`)
+            .then(response => response.json())
+            .then(data => {
+                hbnb.listingsData = data; // Store the fetched data
+                hbnb.displayHotels(data);
+            })
+            .catch(error => console.error('Error fetching places:', error));
+    },
 
     init: function() {
         hbnb.amenitiesInit();

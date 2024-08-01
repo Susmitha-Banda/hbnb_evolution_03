@@ -14,7 +14,7 @@
     
     <title>HBnB Evolution Part 03</title>
 </head>
-<body pg-name="index" js="off">
+<body pg-name="index" js="on">
     {% include "header.html" %}
     
 
@@ -90,13 +90,13 @@
                         <label>
                             <input type="radio" name="amenities-radio-group" value="specific" {{ specific_amen_checked }} />
                             <span>Specific Ones</span>
-                            <button id="btn-specific-amenities-select" type="button">
+                            <button id="btn-specific-amenities-select1" type="button">
                                 <span>Please select</span>
                                 <span class="arrows">&raquo;</span>
                             </button>
                         </label>
                     </span>
-                    <div id="amenities-submenu" state="hide">
+                    <div id="amenities-submenu1" state="hide">
                         <div class="instruct">
                             Choose the ones that you want
                         </div>
@@ -139,19 +139,61 @@
         {% endif %}
     </section>
 
-    <section id="destination-filter">
-        <h2>Find Your Destinations Here</h2>
+    <section id="filters">
         <div class="filter-container">
-            <label for="destination-filter-select">Filter by:</label>
-            <select id="destination-filter-select">
-                <option value="">Select a country</option>
-                <!-- Options will be dynamically populated -->
-            </select>
-        </div>
-        <div id="destination-list">
-            <!-- Destinations will be dynamically populated -->
+            <div class="filter-group" id="destination-filter">
+                <h2>Find Your Destinations Here</h2>
+                <div class="filter-options">
+                    <label for="destination-filter-select">Filter by:</label>
+                    <select id="destination-filter-select">
+                        <option value="">Select a country</option>
+                        <!-- Options will be dynamically populated -->
+                    </select>
+                </div>
+            </div>
+            <div class="filter-group" id="amenities-filter">
+                <h2>Find Your Comforts</h2>
+                <span class="specific">
+                    <label>
+                        <button id="btn-specific-amenities-select" type="button">
+                            <span>Please select</span>
+                            <span class="arrows">&raquo;</span>
+                        </button>
+                    </label>
+                </span>
+                <div id="amenities-submenu" state="hide">
+                    <div class="instruct">
+                        Choose the ones that you want
+                    </div>
+                    <div class="items">
+                        {% set amenity_item_selected = "checked" %}
+                        {% for amenity in amenities %}
+                            <!-- Re-select the checkboxes that were previously chosen -->
+                            {% if selected and "amenities" in selected %}
+                                {% if selected["amenities"] != "" and selected["amenities"]|length > 0 %}
+                                    {% set amenity_item_selected = "" %}
+                                    {% if amenity.id in selected["amenities"] %}
+                                        {% set amenity_item_selected = "checked" %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        <label>
+                            <input type="checkbox" name="amenities-specific-group[]" value="{{ amenity.id }}" {{ amenity_item_selected }}>
+                            <span>{{ amenity.name }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    <div class="confirm">
+                        <button id="btn-specific-amenities-ok" type="button">OK</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
+    
+    
+    
+
     
 
      

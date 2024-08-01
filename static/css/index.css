@@ -129,42 +129,46 @@ header .status > .bubble.down {
 }
 #menu .contents {
   margin: 0 auto;
-  max-width: 1280px;
+  max-width: 1200px;
   display: flex;
   font-size: 1.6rem;
-  padding: 10px;
+  padding: 20px;
+  justify-content: space-between;
+  margin: 0 auto;
 }
-#menu .contents > .destination {
-  flex: 7;
-}
+#menu .contents > .destination,
 #menu .contents > .amenities {
-  margin-left: 20px;
-  flex: 4;
-}
-#menu .contents > .amenities .title {
-  display: flex;
-}
-#menu .contents > .amenities .title > .text {
   flex: 1;
 }
-#menu .contents > .amenities .title > .selected {
-  font-size: 1.2rem;
-  align-content: center;
-  display: inline-block;
+#menu .contents > .destination {
+  margin-right: 20px;
 }
-#menu .contents > .amenities .title > .selected[state=hide] {
-  display: none;
+#menu .contents > .destination .title,
+#menu .contents > .amenities .title  {
+  font-size: 2.2rem;
+  border-bottom: 1px solid #999;
+  margin-bottom: 10px;
 }
+#menu .contents > .destination .choice,
 #menu .contents > .amenities .choice {
-  position: relative;
+  font-size: 1.6rem;
 }
-#menu .contents > .amenities .choice button {
-  padding: 5px 5px 2px 5px;
-  cursor: pointer;
+#menu .contents > .destination .choice > span,
+#menu .contents > .amenities .choice > span {
+  user-select: none;
 }
-#menu .contents > .amenities .choice button > .arrows {
+#menu .contents > .destination .choice > span > label,
+#menu .contents > .amenities .choice > span > label {
+  padding: 8px 5px;
+  border: 1px solid rgba(0, 0, 0, 0);
   display: inline-block;
-  transition: all 0.3s;
+}
+#menu .contents > .destination .choice > span > label:hover,
+#menu .contents > .amenities .choice > span > label:hover {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: #E5E5E5;
+  border-radius: 5px;
+  cursor: pointer;
 }
 #menu .contents > .destination > .title, #menu .contents .amenities > .title {
   font-size: 2.2rem;
@@ -214,7 +218,7 @@ header .status > .bubble.down {
   background-color: #E5E5E5;
   padding: 10px;
   border-radius: 3px;
-  top: 30px;
+  top: 90px;
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
   border: 1px solid #999;
   position: absolute;
@@ -714,8 +718,9 @@ footer {
   text-decoration: none;
 }
 
+/* desinations */
 
-#destination-filter {
+#destination-filter, #amenities-filter {
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -724,9 +729,10 @@ footer {
 
 .filter-container {
   margin-bottom: 20px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 20%, rgba(0, 0, 0, 0.2) 80%, rgba(0, 0, 0, 0) 100%);
 }
 
-#destination-filter-select {
+#destination-filter-select, #amenities-filter-select {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -755,4 +761,140 @@ footer {
 
 .destination-card h3 {
   margin: 10px 0;
+}
+
+
+/* General Container Styles */
+#amenities-filter-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  max-width: 300px;
+  margin: 0 auto;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Amenities Checkbox Styles */
+#amenities-filter-container label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  font-size: 30px;
+  color: #333;
+}
+
+/* Hover and Active Styles */
+#amenities-filter-container label:hover {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+/* Styles for Filter Container Heading */
+#amenities-filter-container h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ff4d4d; /* Red color for heading */
+  text-align: center;
+}
+
+/* Styles for Filtered Hotel Cards */
+.destination-card, amenities-card,
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 15px 0;
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.destination-card:hover,
+.card:hover,
+.amenities-card:hover {
+  transform: translateY(-5px);
+}
+
+.destination-card img,
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.destination-card h3,
+.card-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #333;
+}
+
+.destination-card p,
+.card-description {
+  font-size: 14px;
+  color: #666;
+}
+
+.card-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ff4d4d; /* Red color for price */
+  margin-top: 10px;
+}
+
+.card-button {
+  background-color: #ff4d4d; 
+}
+
+.filter-container {
+    display: flex; /* Use flexbox to arrange items side by side */
+    justify-content: space-between; /* Distribute space between items */
+    gap: 10px; /* Add some space between the two filters */
+    padding: 10px; /* Add some padding around the container */
+}
+
+.filter-group {
+    flex: 1; /* Allow each filter group to take up equal space */
+}
+
+.filter-group label {
+    display: block; /* Make sure the label is on top of the select element */
+    margin-bottom: 1px; /* Add some space between the label and the select element */
+}
+
+.filter-group select {
+    width: 100%; /* Make the select element take up the full width of its container */
+}
+
+
+/* Style for the checkbox container */
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style for individual checkboxes */
+.checkbox-container label {
+  margin-bottom: 5px;
+}
+
+/* Style for Apply Filters button */
+#amenities-ok-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#amenities-ok-btn:hover {
+  background-color: #0056b3;
 }

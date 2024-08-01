@@ -19,6 +19,7 @@ def index():
     # Load the data we need before passing it to the template
     countries = Country.all(True)
     amenities = Amenity.all(True)
+  
 
     return render_template('index.html', countries=countries, amenities=amenities)
 

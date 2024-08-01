@@ -48,7 +48,7 @@ class DBStorage():
             else:
                 db = "hbnb_evo_db"
 
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(user, pwd, host, db))
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(user, pwd, host, db), pool_size=10, max_overflow=20)
 
         if is_testing == "1":
             Base.metadata.drop_all(self.__engine)

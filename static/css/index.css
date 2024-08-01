@@ -3,7 +3,8 @@ html, body {
   padding: 0 0 30px 0;
   font-family: "Josefin Sans", sans-serif;
   font-size: 10px;
-  background-color: #FFF;
+  background-color: #FCF6F5;
+  color: #333;
 }
 
 button {
@@ -30,12 +31,61 @@ body[js=off] #no-js {
 }
 
 header {
+  background-color:  #FF621F;
   width: 100%;
-  border-bottom: 2px solid #C5C5FF;
-  padding: 10px;
+  border-bottom: 2px solid #ff5151;
+  padding: 20px;
   display: flex;
   box-sizing: border-box;
+  color: #333;
+  align-items: center;
 }
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.logo {
+  width: 200px;
+
+  align-items: left;
+}
+.welcome-message {
+  flex-grow: 1;
+  padding: 0 20px;
+  text-align: center;
+}
+.welcome-message h1 {
+  font-size: 3em;
+  margin: 0;
+  color: #FFF;
+}
+.welcome-message p {
+  font-size: 2em;
+  margin: 5px 0 0;
+  color: #FFF;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-buttons .btn {
+  color: #fff;
+  background-color: #ff0000;
+  padding: 10px 10px;
+  text-decoration: none;
+  font-size: small;
+  border-radius: 4px;
+}
+
+.nav-buttons .btn:hover {
+  background-color: #cc0000;
+}
+
 header .content {
   flex: 1;
 }
@@ -516,3 +566,193 @@ footer {
 }
 
 /*# sourceMappingURL=index.css.map */
+
+/* Container for hotel cards */
+#hotel-listings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 20px;
+}
+
+/* Individual card styling */
+.card {
+  background-color: rgb(255, 255, 255);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  width: 300px; /* Adjust based on design */
+  text-align: center;
+}
+
+.card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 30px;
+}
+
+.card-title {
+  font-size: 2em;
+  margin: 0;
+  color: #48036E;
+}
+
+.card-description {
+  font-size: 1.5em;
+  color: #555;
+}
+
+.card-price {
+  font-size: 1.2em;
+  color: #ff0000;
+  margin: 20px 0;
+}
+
+.card-button {
+  background-color: #48036E;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  text-decoration: none; /* Remove underline from link */
+}
+
+.card-button:hover {
+  background-color: #35024e;
+}
+
+/* Login Modal background */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+}
+
+/*Login Modal content */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  max-width: 400px; /* Maximum width for the modal */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Adding some shadow */
+  border-radius: 10px; /* Rounded corners */
+}
+
+/*Login Close button */
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Login Form elements */
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content form label,
+.modal-content form input,
+.modal-content form button {
+  margin-bottom: 10px;
+}
+
+.modal-content form input,
+.modal-content form button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.modal-content form button {
+  background-color: #4CAF50; /* Green background */
+  color: white; /* White text */
+  border: none; /* Remove borders */
+  cursor: pointer; /* Add a pointer cursor on hover */
+}
+
+.modal-content form button:hover {
+  background-color: #45a049; /* Darker green */
+}
+
+
+/* Close button */
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer; /* Ensure pointer cursor */
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+}
+
+
+#destination-filter {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.filter-container {
+  margin-bottom: 20px;
+}
+
+#destination-filter-select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+#destination-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.destination-card {
+  width: calc(33% - 20px);
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.destination-card img {
+  max-width: 100%;
+  border-radius: 4px;
+}
+
+.destination-card h3 {
+  margin: 10px 0;
+}

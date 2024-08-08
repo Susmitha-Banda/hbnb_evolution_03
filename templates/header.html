@@ -1,14 +1,15 @@
 <header>
-    <div class="header-container">
-        <img src="../static/img/hbnb_logo.png" alt="Logo" class="logo">
-        <div class="welcome-message">
-            <h1>Welcome to the HBnB Listings</h1>
-            <p>Your one-stop destination for finding the perfect vacation rental.</p>
-        </div>
-
-        <nav class="nav-buttons">
-            <button id="login-button" class="btn">Login</button> <!-- Updated to trigger modal -->
-        </nav>
+    <div>
+        <img src="../static/img/hbnb_logo.png" alt="Logo" class="logo" onclick="window.location.reload()"/>
+    </div>
+    <div class="login-button">
+        <button id="login-button" class="btn">Login</button> <!-- Updated to trigger modal -->
+    </div>
+    <div>
+        <button id="logout-button" style="display:none;" onclick="hbnb.handleLogout()">Logout</button>
+    </div>
+    <div class="status">
+        <a href="/admin">Admin area</a>
     </div>
 </header>
 

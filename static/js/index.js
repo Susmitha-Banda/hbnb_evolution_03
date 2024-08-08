@@ -6,116 +6,148 @@
 
 
 hbnb = {
-    amenitiesInit: function() {
-        // set up the onclick events for the Amenities radios + button
-        let amenRadios = document.querySelectorAll("#menu >.contents >.amenities >.choice input[type='radio']");
-        for (let elem of amenRadios) {
-            elem.addEventListener("change", function(e) {
-            let specificSelectedText = document.querySelector("#menu >.contents >.amenities >.title .selected")
-            
-                let radioValue = e.target.value
-                if (radioValue == 'specific') {
-                    hbnb.showSpecificAmenitiesSubmenu();
-                    hbnb.updateSpecificAmenitiesCount();
-                    specificSelectedText.setAttribute('state', 'show');
-                } else {
-                    // all amenities - empty string
-                    hbnb.hideSpecificAmenitiesSubmenu()
-                    specificSelectedText.setAttribute('state', 'hide')
-                }
-            });
-        }
 
-        let amenSpecificSelectBtn = document.getElementById("btn-specific-amenities-select");
-        amenSpecificSelectBtn.addEventListener('click', function() {
-            hbnb.showSpecificAmenitiesSubmenu()
-
-            // NOTE: simply clicking the Please Select button won't cause the radio to change
-            // The button eats up the click event so the label tag + radio won't receive it.
-            // We'll select the radio if it isn't already selected
-            if (!amenRadios[1].checked) {
-                amenRadios[1].click();
-            }
-        });
-
-        // For the checkboxes in the submenu, let's add events that will update the counter
-        let selectedAmenitiesCheckboxes = document.querySelectorAll("#amenities-submenu >.items input[type='checkbox']");
-        for (let c of selectedAmenitiesCheckboxes) {
-            c.addEventListener('click', function() {
-                hbnb.updateSpecificAmenitiesCount();
-            })
-        }
-
-        // Last but not least! Now let's add an event to the OK button in the submenu
-        // Note that we are just hiding the menu and doing anything anything special
-        let amenSpecificConfirmBtn = document.getElementById("btn-specific-amenities-ok");
-        amenSpecificConfirmBtn.addEventListener('click', function(){
-            hbnb.hideSpecificAmenitiesSubmenu();
-        })
-
-    },
-    showSpecificAmenitiesSubmenu: function() {
-        // I have set up the CSS in a certain way so that the submenu is shown / hidden
-        // depending on the 'state' parameter's value in #amenities-submenu
-        let submenu = document.querySelector("#amenities-submenu")
-        submenu.setAttribute("state", 'show')
-    },
-    hideSpecificAmenitiesSubmenu: function() {
-        let submenu = document.querySelector("#amenities-submenu")
-        submenu.setAttribute("state", 'hide')
-    },
-    updateSpecificAmenitiesCount: function() {
-        let specificCount = document.querySelector("#menu >.contents >.amenities >.title .count")
-        let selectedAmenitiesCheckboxes = document.querySelectorAll("#amenities-submenu >.items input[type='checkbox']");
-
-        let checkedCount = 0
-        for (let c of selectedAmenitiesCheckboxes) {
-            if (c.checked) {
-                checkedCount++
-            }
-        }
-
-        specificCount.innerHTML = checkedCount
-    },
     listingsData: [],
-    fetchAndDisplayHotels: function(imageList) {
+    imageList: [],
+    filteredPlaces: [],
+    fetchPlaces: function() {
 
         fetch('/api/v1/places')
             .then(response => response.json())
             .then(data => {
+                console.log("places:")
                 console.log(data);
                 hbnb.listingsData = data; // Store the fetched data
-                const lisitngsContainer = document.getElementById('hotel-listings');
-                lisitngsContainer.innerHTML = '';
-                count = 0;
-
-                data.forEach(place => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.setAttribute('data-id', place.id); // Set unique identifier
-                    card.innerHTML =`
-                        <img src="${imageList[count].urls.small}" alt="${place.name}" class="card-image">
-                        <div class="card-content">
-                            <h2 class="card-title">${place.name}</h2>
-                            <p class="card-description">${place.description}</p>
-                            <p class="card-price">$${place.price_per_night} per night</p>
-                            <button class="card-button">Find More</button>
-                        </div>
-                    `;
-                    lisitngsContainer.appendChild(card);
-                    count++;
-                });
-                // Add click event listeners to all "Find More" buttons
-                const buttons = document.querySelectorAll('.card-button');
-                buttons.forEach(button => {
-                    button.addEventListener('click', function(event) {
-                        const card = event.target.closest('.card');
-                        const id = card.getAttribute('data-id');
-                        hbnb.showDetails(id);
-                    });
-                });
-                hbnb.fetchAndPopulateCountries(); // Fetch and populate countries on initialization
+                hbnb.filteredPlaces = data;
+                hbnb.createPlacesCard(data);
+                hbnb.fetchCountries(data); // Fetch and populate countries on initialization
               
+            })
+            .catch(error => console.error('Error fetching places:', error));
+    },
+
+    createPlacesCard: function(data) {
+        const lisitngsContainer = document.getElementById('hotel-listings');
+        lisitngsContainer.innerHTML = '';
+        count = 0;
+        data.forEach(place => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.setAttribute('data-id', place.id); // Set unique identifier
+            card.innerHTML =`
+                <img src="${imageList[count].urls.small}" alt="${place.name}" class="card-image">
+                <div class="card-content">
+                    <h2 class="card-title">${place.name}</h2>
+                    <p class="card-description">${place.description}</p>
+                    <p class="card-price">$${place.price_per_night} per night</p>
+                    <button class="card-button">Find More</button>
+                </div>
+            `;
+            lisitngsContainer.appendChild(card);
+            count++;
+        });
+        // Add click event listeners to all "Find More" buttons
+        const buttons = document.querySelectorAll('.card-button');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                const card = event.target.closest('.card');
+                const id = card.getAttribute('data-id');
+                hbnb.showDetails(id);
+            });
+        });
+    },
+
+    fetchCountries: function(places) {
+        fetch('/api/v1/countries')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Countries data:', data); // Debugging line
+                hbnb.populateCountryFilter(places, data);
+                hbnb.fetchAndPopulateAmenities(); // Fetch and populate amenities filter
+            })
+            .catch(error => console.error('Error fetching countries:', error));
+    },
+  
+    populateCountryFilter: function(places, countries) {
+        const select = document.getElementById('destination-filter-select');
+        
+        const countriesSet = new Set(countries.map(country => country.name));
+        countriesSet.forEach(country => {
+            const option = document.createElement('option');
+            option.value = country;
+            option.textContent = country;
+            select.appendChild(option);
+        });
+  
+        // Add event listener to update displayed destinations
+        select.addEventListener('change', function(event) {
+            const selectedCountry = event.target.value;
+            hbnb.filterPlaces(places, countries.filter(country => country.name == selectedCountry));
+        });
+    },
+  
+    filterPlaces: function(places, country) {
+        console.log('country selected:');
+        console.log(country);
+        fetch(`/api/v1/countries/${country[0].code}/cities`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('cities of selected country:');
+                console.log(data);
+                hbnb.displayDestinations(places, data);
+            })
+            .catch(error => console.error('Error fetching filtered destinations:', error));
+    },
+  
+    displayDestinations: function(places, filteredCities) {
+        const filteredCityIds = filteredCities.map(city => city.id);
+        filteredPlaces = places.filter(place => filteredCityIds.includes(place.city_id));
+        hbnb.createPlacesCard(filteredPlaces);
+    },
+
+    fetchAndPopulateAmenities: function() {
+        fetch('/api/v1/amenities')
+            .then(response => response.json())
+            .then(data => {
+                hbnb.populateAmenitiesFilter(data);
+            })
+            .catch(error => console.error('Error fetching amenities:', error));
+    },
+    
+    populateAmenitiesFilter: function(amenities) {
+        const amenitiesSubMenu = document.getElementById("amenities-submenu");
+        const amenitiesSelectButton = document.getElementById("btn-specific-amenities-select");
+        const okButton = document.getElementById("btn-specific-amenities-ok");
+    
+        // Show/Hide amenities submenu
+        amenitiesSelectButton.addEventListener("click", function() {
+            // Toggle visibility of the submenu
+            if (amenitiesSubMenu.style.display === "none" || amenitiesSubMenu.style.display === "") {
+                amenitiesSubMenu.style.display = "block";
+            } else {
+                amenitiesSubMenu.style.display = "none";
+            }
+        });
+    
+        // Handle OK button in amenities submenu
+        okButton.addEventListener("click", function() {
+            const selectedAmenities = Array.from(document.querySelectorAll('input[name="amenities-specific-group[]"]:checked'))
+                                  .map(checkbox => checkbox.value);
+            console.log('selected '+selectedAmenities)
+            filteredPlaces = hbnb.filteredPlaces.filter(place => selectedAmenities.includes(place.amenity_ids));
+            hbnb.createPlacesCard(filteredPlaces);
+            // Hide the submenu when OK is clicked
+            amenitiesSubMenu.style.display = "none";
+           // filterHotels(); // Optionally call a function to filter results based on selected amenities
+        });
+    },
+
+    fetchAndDisplayHotelsByAmenities: function(amenities) {
+        fetch(`/api/v1/places?amenities=${amenities.join(',')}`)
+            .then(response => response.json())
+            .then(data => {
+                hbnb.listingsData = data; // Store the fetched data
+                hbnb.displayHotels(data);
             })
             .catch(error => console.error('Error fetching places:', error));
     },
@@ -149,33 +181,51 @@ hbnb = {
         if (listing) {
             // Populate the modal with the listing data
             const modal = document.getElementById('listing-modal');
-            //modal.querySelector('.modal-image').src = listing.image_url; // Assuming you have image_url in your data
+            modal.querySelector('.modal-image').src = imageList[Math.floor(Math.random() * 10)].urls.small_s3;
             modal.querySelector('.modal-title').innerText = listing.name;
-            modal.querySelector('.modal-description').innerText = listing.description;
-            modal.querySelector('.modal-price').innerText = `$${listing.price_per_night} per night`;
+            modal.querySelector('.modal-description').innerText = `About: ${listing.description}`;
+            modal.querySelector('.modal-price').innerText = ` Price: $${listing.price_per_night} per night`;
 
             // Fetch and display amenities
             hbnb.fetchAmenities(id).then(amenities => {
                 if (amenities.length > 0) {
-                    const amenitiesList = amenities.map(amenity => amenity.name).join(', ');
+                    const amenitiesList = amenities.map(amenity => amenity.amenity_name).join(', ');
                     modal.querySelector('.modal-amenities').innerText = `Amenities: ${amenitiesList}`;
                 } else {
                     modal.querySelector('.modal-amenities').innerText = 'No amenities listed';
                 }
-            });
+
+                 // Fetch and display reviews
+                hbnb.fetchReviews(id).then(reviews => {
+                    const reviewsContainer = modal.querySelector('.modal-reviews');
+                    reviewsContainer.innerHTML = ''; // Clear any previous reviews
+
+                    if (reviews.length > 0) {
+                        reviews.forEach(review => {
+                            const reviewElement = document.createElement('div');
+                            reviewElement.classList.add('review');
+                            reviewElement.innerHTML = `
+                                <h3>User: ${review.user.first_name} ${review.user.last_name}</h3>
+                                <p>Comment: ${review.comment}</p>
+                                <p>Rating: ${review.rating}<p>
+                            `;
+                            reviewsContainer.appendChild(reviewElement);
+                        });
+                    } else {
+                        reviewsContainer.innerText = 'No reviews available';
+                    }
+                        // Add the "Reviews" heading
+                    const reviewsHeading = document.createElement('h2');
+                    reviewsHeading.classList.add('modal-title');
+                    reviewsHeading.innerText = '';
+                    reviewsContainer.insertBefore(reviewsHeading, reviewsContainer.firstChild);
+                });
             
-            // Fetch and display reviews
-            hbnb.fetchReviews(id).then(reviews => {
-                if (reviews.length > 0) {
-                    const reviewsContent = reviews.map(review => `<p>${review}</p>`).join('');
-                    modal.querySelector('.modal-reviews').innerHTML = `Reviews: ${reviewsContent}`;
-                } else {
-                    modal.querySelector('.modal-reviews').innerHTML = 'No reviews available';
-                }
             });
+
+
             // Display the modal
             modal.style.display = 'block';
-            console.log('button clicked !!!' + modal)
         }
        
     },
@@ -187,12 +237,12 @@ hbnb = {
     },
 
     fetchImagesAndHotels: function(){
-       let imageList = [];
        fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent('hotel room')}&client_id=${'Il3LOicE8Ta8_O7bRTR4H1_03lpalJBRnPrVl8llbPo'}`)
         .then(response => response.json())
         .then(data => {
             imageList = data.results;
-            hbnb.fetchAndDisplayHotels(imageList);
+            console.log(imageList);
+            hbnb.fetchPlaces();
         })
         .catch(error => console.error('Error fetching Unsplash images:', error));
 
@@ -226,6 +276,11 @@ hbnb = {
                 hbnb.closeLoginModal();
             }
         });
+            // Get the logout button and add an event listener
+        let logoutButton = document.getElementById("logout-button");
+        logoutButton.addEventListener('click', function() {
+            hbnb.handleLogout();
+        });
     },
 
     showLoginModal: function() {
@@ -234,8 +289,7 @@ hbnb = {
     },
 
     closeLoginModal: function() {
-        let modal = document.getElementById("login-modal");
-        
+        let modal = document.getElementById("login-modal");   
         modal.style.display = 'none';
     },
        
@@ -253,125 +307,69 @@ hbnb = {
         // You can replace this with actual authentication logic
         
         alert("Login successful!"); // Replace with your own login logic
-        hbnb.closeLoginModal();
 
-    
-    },
-
-    fetchAndPopulateCountries: function() {
-        fetch('/api/v1/countries')
-            .then(response => response.json())
-            .then(data => {
-                console.log('Countries data:', data); // Debugging line
-                hbnb.populateCountryFilter(data);
-                hbnb.fetchAndPopulateAmenities(); // Fetch and populate amenities filter
-            })
-            .catch(error => console.error('Error fetching countries:', error));
-    },
-  
-    populateCountryFilter: function(countries) {
-        const select = document.getElementById('destination-filter-select');
-       // select.innerHTML = ''; // Clear existing options
-  
-        // // Add "All" option
-        // const allOption = document.createElement('option');
-        // allOption.value = '';
-        // allOption.textContent = 'All';
-        // select.appendChild(allOption);
-  
-        // Add country options
-        
-        const countriesSet = new Set(countries.map(country => country.name));
-        countriesSet.forEach(country => {
-            const option = document.createElement('option');
-            option.value = country;
-            option.textContent = country;
-            select.appendChild(option);
-        });
-  
-        // Add event listener to update displayed destinations
-        select.addEventListener('change', function(event) {
-            const selectedCountry = event.target.value;
-            hbnb.filterAndDisplayDestinations(selectedCountry);
-        });
-    },
-  
-    filterAndDisplayDestinations: function(country) {
-        fetch(`/api/v1/countries?country=${country}`)
-            .then(response => response.json())
-            .then(data => {
-                hbnb.displayDestinations(data);
-            })
-            .catch(error => console.error('Error fetching filtered destinations:', error));
-    },
-  
-    displayDestinations: function(destinations) {
-        const list = document.getElementById('destination-list');
-        list.innerHTML = '';
-  
-        destinations.forEach(destination => {
-            const card = document.createElement('div');
-            card.className = 'destination-card';
-            card.innerHTML = `
-                <img src="${destination.image}" alt="${destination.city}">
-                <h3>${destination.city}</h3>
-                <p>${destination.description}</p>
-            `;
-            list.appendChild(card);
-        });
-    },
-
-    fetchAndPopulateAmenities: function() {
-        fetch('/api/v1/amenities')
-            .then(response => response.json())
-            .then(data => {
-                hbnb.populateAmenitiesFilter(data);
-            })
-            .catch(error => console.error('Error fetching amenities:', error));
-    },
-    
-    populateAmenitiesFilter: function(amenities) {
-        const amenitiesContainer = document.getElementById('amenities-checkboxes');
-        amenitiesContainer.innerHTML = ''; // Clear existing checkboxes
-
-        // Add amenities checkboxes
-        amenities.forEach(amenity => {
-            const label = document.createElement('label');
-            label.innerHTML = `<input type="checkbox" value="${amenity.id}"> ${amenity.name}`;
-            amenitiesContainer.appendChild(label);
-        });
-
-        // Add Apply Filters button
-        const okButton = document.getElementById('amenities-ok-btn');
-        okButton.addEventListener('click', hbnb.applyAmenitiesFilter);
-    },
-
-    applyAmenitiesFilter: function() {
-        const selectedCheckboxes = Array.from(document.querySelectorAll('#amenities-checkboxes input:checked'));
-        const selectedAmenities = selectedCheckboxes.map(checkbox => checkbox.value);
-
-        if (selectedAmenities.length > 0) {
-            hbnb.fetchAndDisplayHotelsByAmenities(selectedAmenities);
-        } else {
-            hbnb.fetchAndDisplayHotels(); // Display all hotels if no amenities are selected
+        // Hide the login button
+        let loginButton = document.getElementById("login-button");
+        if (loginButton) {
+            loginButton.style.display = 'none';
         }
-    },
-    
-    fetchAndDisplayHotelsByAmenities: function(amenities) {
-        fetch(`/api/v1/places?amenities=${amenities.join(',')}`)
-            .then(response => response.json())
-            .then(data => {
-                hbnb.listingsData = data; // Store the fetched data
-                hbnb.displayHotels(data);
-            })
-            .catch(error => console.error('Error fetching places:', error));
+        // Show the logout button
+        let logoutButton = document.getElementById("logout-button");
+        if (logoutButton) {
+            logoutButton.style.display = 'block';
+        }
+
+        // Hide the welcome section and show the homepage content
+        let welcomeSection = document.getElementById("welcome-section");
+        let homepageContent = document.getElementById("homepage-content");
+
+        if (welcomeSection && homepageContent) {
+            welcomeSection.style.display = "none";
+            homepageContent.style.display = "block";
+        } else {
+            console.error("Could not find one or more elements.");
+        }
+
+        hbnb.closeLoginModal();
     },
 
+    handleLogout: function() {
+
+        // Remove login state from localStorage
+        localStorage.removeItem('loggedIn');
+
+        // Show the login button
+        let loginButton = document.getElementById("login-button");
+        if (loginButton) {
+            loginButton.style.display = 'block';
+        }
+
+        // Hide the logout button
+        let logoutButton = document.getElementById("logout-button");
+        if (logoutButton) {
+            logoutButton.style.display = 'none';
+        }
+
+        // Show the welcome section and hide the homepage content
+        let welcomeSection = document.getElementById("welcome-section");
+        let homepageContent = document.getElementById("homepage-content");
+
+        if (welcomeSection && homepageContent) {
+            welcomeSection.style.display = "block";
+            homepageContent.style.display = "none";
+        } else {
+            console.error("Could not find one or more elements.");
+        }
+
+        // Optionally clear any stored user data or session
+        alert("Logout successful!");
+    },
+    
+        
     init: function() {
-        hbnb.amenitiesInit();
         hbnb.fetchImagesAndHotels(); // Fetch and display hotels on initialization
         hbnb.loginInit(); // Initialize login functionality
-        
+        hbnb.handleLogout();
     }
     
 };

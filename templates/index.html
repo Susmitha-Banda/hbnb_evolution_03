@@ -11,12 +11,13 @@
     <link rel="icon" href="../static/img/favicon.ico" />
     <script src="https://cdn.jsdelivr.net/npm/unsplash-js@latest/dist/unsplash-js.umd.js"></script>
     <script type="text/javascript" src="../static/js/index.js"></script>
-    
     <title>HBnB Evolution Part 03</title>
 </head>
+
+
 <body pg-name="index" js="on">
-    {% include "header.html" %}
-    
+    {% include "header.html" %} 
+
 
     <div id="no-js">
         <!-- There will be a brief flash-of-unstyled-content where this message appears -->
@@ -24,98 +25,50 @@
         <h1>Please enable Javascript in your browser to view the site!</h1>
     </div>
 
-    <section id="menu">
-        <form class="contents" action="/" method="post">
-            <div class="destination">
-                <div class="title">Destination</div>
-                <div class="choice">
+    <!-- Welcome Section -->
+    <section id="welcome-section" class="background-image">
+        <div class="welcome-message">
+            <h1>Welcome to HBnB</h1>
+            <p>Your perfect getaway starts here.</p>
+            <p>We offer the best stays for your travels, ensuring comfort and quality in every stay.</p>
+            <p>Please Log in to unlock access to all our listings and begin your search for the ideal destination.</p>
+        </div>
+    </section>
 
-                    <!-- Don't forget that this html page is also used to display the search results -->
-                    <!-- The chunk of code below will re-select the 'All' radio button if it was chosen previously -->
-                    {% set all_dest_checked = "checked" %}
-                    {% if selected and "destination" in selected %}
-                        {% if selected["destination"] != "" %}
-                            {% set all_dest_checked = "" %}
-                        {% endif %}
-                    {% endif %}
-                    <span>
-                        <label>
-                            <input type="radio" name="destination-radio-group" value="" {{ all_dest_checked }} />
-                            <span>All</span>
-                        </label>
-                    </span>
-                    {% for country in countries %}
-                        <!-- Don't forget that this html page is also used to display the search results -->
-                        <!-- The chunk of code below will re-select the radio button for the country chosen previously during form submission -->
-                        {% set specific_dest_checked = "" %}
-                        {% if selected and "destination" in selected %}
-                            {% if selected["destination"] == country.code %}
-                                {% set specific_dest_checked = "checked" %}
-                            {% endif %}
-                        {% endif %}
-                    <span>
-                        <label>
-                            <input type="radio" name="destination-radio-group" value="{{ country.code }}" {{ specific_dest_checked }} />
-                            <span>{{ country.name }}</span>
-                        </label>
-                    </span>
-                    {% endfor %}
+    <!-- Current Homepage Content -->
+    <div id="homepage-content" style="display:none;">
+        <section id="filters" >
+            <div class="filter-container">
+                <div class="filter-group" id="destination-filter">
+                    <h2>Find Your Destinations Here</h2>
+                    <div class="filter-options">
+                        <label for="destination-filter-select">Filter by:</label>
+                        <select id="destination-filter-select">
+                            <option value="">Select a country</option>
+                            <!-- Options will be dynamically populated -->
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="amenities">
-                <div class="title">
-                    <span class="text">Amenities</span>
-                    <span class="selected" state="hide">
-                        <span class="count">0</span>
-                        <span>selected</span>
-                    </span>
-                </div>
-                <div class="choice">
-                    <!-- Same as with the destination radio inputs, we re-select what was previously selected during form submission -->
-                    {% set all_amen_checked = "checked" %}
-                    {% set specific_amen_checked = "" %}
-                    {% if selected and "amenities" in selected %}
-                        {% if selected["amenities"] != "" and selected["amenities"]|length > 0 %}
-                            {% set all_amen_checked = "" %}
-                            {% set specific_amen_checked = "checked" %}
-                        {% endif %}
-                    {% endif %}
-                    <span>
-                        <label>
-                            <input type="radio" name="amenities-radio-group" value="" {{ all_amen_checked }} />
-                            <span>Anything</span>
-                        </label>
-                    </span>
+                <div class="filter-group" id="amenities-filter">
+                    <h2>Find Your Comforts</h2>
                     <span class="specific">
                         <label>
-                            <input type="radio" name="amenities-radio-group" value="specific" {{ specific_amen_checked }} />
-                            <span>Specific Ones</span>
-                            <button id="btn-specific-amenities-select1" type="button">
+                            <button id="btn-specific-amenities-select" type="button">
                                 <span>Please select</span>
                                 <span class="arrows">&raquo;</span>
                             </button>
                         </label>
                     </span>
-                    <div id="amenities-submenu1" state="hide">
+                    <div id="amenities-submenu">
                         <div class="instruct">
                             Choose the ones that you want
                         </div>
                         <div class="items">
-                            {% set amenity_item_selected = "checked" %}
                             {% for amenity in amenities %}
-                                <!-- Re-select the checkboxes that were previously chosen -->
-                                {% if selected and "amenities" in selected %}
-                                    {% if selected["amenities"] != "" and selected["amenities"]|length > 0 %}
-                                        {% set amenity_item_selected = "" %}
-                                        {% if amenity.id in selected["amenities"] %}
-                                            {% set amenity_item_selected = "checked" %}
-                                        {% endif %}
-                                    {% endif %}
-                                {% endif %}
-                            <label>
-                                <input type="checkbox" name="amenities-specific-group[]" value="{{ amenity.id }}" {{ amenity_item_selected }}>
-                                <span>{{ amenity.name }}</span>
-                            </label>
+                                <label>
+                                    <input type="checkbox" name="amenities-specific-group[]" value="{{ amenity.id }}">
+                                    <span>{{ amenity.name }}</span>
+                                </label>
                             {% endfor %}
                         </div>
                         <div class="confirm">
@@ -123,115 +76,64 @@
                         </div>
                     </div>
                 </div>
+                
             </div>
-            <div class="search">
-                <button id="btn-menu-search" type="submit">Search &raquo;</button>
-            </div>
-        </form>
-    </section>
-    <section id="results">
-        {% if places %}
-            {% include "results.html" %}
-        {% else %}
-            <div class="none">
-                <h1>Please run the Search above to find available properties!</h1>
-            </div>
-        {% endif %}
-    </section>
-
-    <section id="filters">
-        <div class="filter-container">
-            <div class="filter-group" id="destination-filter">
-                <h2>Find Your Destinations Here</h2>
-                <div class="filter-options">
-                    <label for="destination-filter-select">Filter by:</label>
-                    <select id="destination-filter-select">
-                        <option value="">Select a country</option>
-                        <!-- Options will be dynamically populated -->
-                    </select>
+            
+        </section>
+    
+        <section id="results">
+            {% if places %}
+                {% include "results.html" %}
+            {% else %}
+                <div class="none">
+                    <h1>Please run the Search above to find available properties!</h1>
                 </div>
-            </div>
-            <div class="filter-group" id="amenities-filter">
-                <h2>Find Your Comforts</h2>
-                <span class="specific">
-                    <label>
-                        <button id="btn-specific-amenities-select" type="button">
-                            <span>Please select</span>
-                            <span class="arrows">&raquo;</span>
-                        </button>
-                    </label>
-                </span>
-                <div id="amenities-submenu" state="hide">
-                    <div class="instruct">
-                        Choose the ones that you want
-                    </div>
-                    <div class="items">
-                        {% set amenity_item_selected = "checked" %}
-                        {% for amenity in amenities %}
-                            <!-- Re-select the checkboxes that were previously chosen -->
-                            {% if selected and "amenities" in selected %}
-                                {% if selected["amenities"] != "" and selected["amenities"]|length > 0 %}
-                                    {% set amenity_item_selected = "" %}
-                                    {% if amenity.id in selected["amenities"] %}
-                                        {% set amenity_item_selected = "checked" %}
-                                    {% endif %}
-                                {% endif %}
-                            {% endif %}
-                        <label>
-                            <input type="checkbox" name="amenities-specific-group[]" value="{{ amenity.id }}" {{ amenity_item_selected }}>
-                            <span>{{ amenity.name }}</span>
-                        </label>
-                        {% endfor %}
-                    </div>
-                    <div class="confirm">
-                        <button id="btn-specific-amenities-ok" type="button">OK</button>
-                    </div>
+            {% endif %}
+        </section>
+        
+        <section id="hotel-listings">
+            <!-- Hotel cards will be injected here by JavaScript -->
+        </section>
+    
+        <div id="listing-modal" class="modal">
+            <div class="modal-content-listing">
+                <span class="close-button" onclick="hbnb.closeModal()">&times;</span>
+                <div class="top-section">
+                    <section class="modal-section image-section">
+                        <img id="modal-image" src="" alt="Listing Image" class="modal-image">
+                    </section>
+                    <section class="modal-section details-section">
+                        <h2 id="modal-title" class="modal-title"></h2>
+                        <p id="modal-description" class="modal-description"></p>
+                        <p id="modal-price" class="modal-price"></p>
+                        <p id="modal-amenities" class="modal-amenities"></p>
+                    </section>
                 </div>
+                <section class="modal-section reviews-section">
+                    <h2 class="modal-title">Reviews</h2> <!-- Added heading here -->
+                    <div id="modal-reviews" class="modal-reviews"></div>
+                </section>
             </div>
         </div>
-    </section>
-    
-    
-    
 
-    
+    </div>
 
-     
-    <section id="hotel-listings">
-        <!-- Hotel cards will be injected here by JavaScript -->
-    </section>
-    
-    <div id="listing-modal" class="modal" style="display:none;">
+     <!-- Login Modal -->
+     <div id="login-modal" class="modal" style="display:none;">
         <div class="modal-content">
-            <span class="close-button" onclick="hbnb.closeModal()">&times;</span>
-            <img src="" alt="Listing Image" class="modal-image">
-            <h2 class="modal-title"></h2>
-            <p class="modal-description"></p>
-            <p class="modal-price"></p>
-            <p class="modal-amenities"></p>
-            <div class="modal-reviews"></div>
+            <button id="close-button" class="close-button">&times;</button>
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <button id="login-submit" type="submit">Login</button>
+            </form>
         </div>
     </div>
-
-    <!-- Login Modal -->
-    <!-- Login Modal HTML -->
-<div id="login-modal" class="modal">
-    <div class="modal-content">
-      <button id="close-button" class="close-button">&times;</button>
-      <h2>Login</h2>
-      <form id="login-form">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        
-        <button id="login-submit" type="submit">Login</button>
-      </form>
-    </div>
-  </div>
-  
-
+    
+    
     {% include "footer.html" %}
 </body>
 </html>

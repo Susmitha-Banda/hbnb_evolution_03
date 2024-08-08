@@ -1,6 +1,7 @@
 """ objects that handles all default RestFul API actions for Amenity """
 from api.v1 import api_routes
-from models.place_amenity import Amenity
+from models.place_amenity import Amenity, Place
+from flask import Flask, jsonify, request
 
 
 @api_routes.route('/amenities', methods=["POST"])
@@ -11,7 +12,13 @@ def amenity_post():
 @api_routes.route('/amenities', methods=["GET"])
 def amenity_get():
     """ Gets all Amenities """
-    return Amenity.all()
+    place_id = request.args.get('listing_id')
+    if not place_id:
+        return Amenity.all()
+         
+    amenities_for_a_place = Place.amenities_data()
+    filtered_amenities = [amenities for amenities in amenities_for_a_place if amenities['place_id'] == place_id]
+    return jsonify(filtered_amenities), 200
 
 @api_routes.route('/amenities/<amenity_id>', methods=["GET"])
 def amenity_specific_get(amenity_id):

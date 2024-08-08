@@ -112,23 +112,25 @@ class Review(Base):
         return jsonify(output)
 
     @staticmethod
-    def specific(review_id):
+    def specific(place_id):
         """ Class method that returns a specific review's data"""
+        output = []
         try:
-            result: Review = storage.get('Review', 'id', review_id)
+            result = storage.get('Review', 'place_id', place_id)
         except IndexError as exc:
             print("Error: ", exc)
             return "Unable to load Review data!"
 
-        output = {
-            "id": result[0].id,
-            "place_id": result[0].place_id,
-            "user_id": result[0].user_id,
-            "rating": result[0].rating,
-            "comment": result[0].comment,
-            "created_at": result[0].created_at.strftime(Review.datetime_format),
-            "updated_at": result[0].updated_at.strftime(Review.datetime_format)
-        }
+        for row in result:
+            output.append = ({
+                "id": row.id,
+                "place_id": row.place_id,
+                "user_id": row.user_id,
+                "rating": row.rating,
+                "comment": row.comment,
+                "created_at": row.created_at.strftime(Review.datetime_format),
+                "updated_at": row.updated_at.strftime(Review.datetime_format)
+            })
 
         return jsonify(output)
 

@@ -40,23 +40,12 @@ header {
   color: #333;
   align-items: center;
 }
-.header-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.logo {
-  width: 200px;
 
-  align-items: left;
+.logo {
+  width: 150px;
+  cursor: pointer;
 }
-.welcome-message {
-  flex-grow: 1;
-  padding: 0 20px;
-  text-align: center;
-}
+
 .welcome-message h1 {
   font-size: 3em;
   margin: 0;
@@ -68,9 +57,25 @@ header {
   color: #FFF;
 }
 
-.nav-buttons {
+/* CSS for the welcome section */
+.background-image {
+  background: url('/static/img/background-img.jpg') no-repeat center center fixed; 
+  background-size: cover;
+  height: 100vh;
   display: flex;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.welcome-message {
+  background: rgba(0, 0, 0, 0.5); /* Optional: Add a semi-transparent background for readability */
+  padding: 20px;
+  border-radius: 10px;
+  flex-grow: 1;
+  padding: 0 20px;
+  text-align: center;
 }
 
 .nav-buttons .btn {
@@ -101,10 +106,8 @@ header .content .subtitle {
 header .status {
   background-color: #F5F5F5;
   border-radius: 5px;
-  padding: 5px;
-  border: 1px solid #CCC;
-  display: flex;
-  align-items: center;
+  padding: 20px;
+  border: 2px solid #000;
 }
 header .status > .txt {
   padding: 0 5px;
@@ -213,67 +216,11 @@ header .status > .bubble.down {
   cursor: pointer;
 }
 
-#amenities-submenu {
-  width: 280px;
-  background-color: #E5E5E5;
-  padding: 10px;
-  border-radius: 3px;
-  top: 90px;
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
-  border: 1px solid #999;
-  position: absolute;
-  transition: all 0.3s;
-}
-#amenities-submenu[state=hide] {
-  opacity: 0;
-  z-index: -2;
-  right: -50px;
-}
-#amenities-submenu[state=show] {
-  opacity: 1;
-  z-index: 2;
-  right: 0;
-}
-#amenities-submenu[state=show] ~ span #btn-specific-amenities-select .arrows {
-  transform: rotate(90deg);
-}
-#amenities-submenu > .instruct {
-  font-size: 1.6rem;
-  border-bottom: 1px solid #999;
-  padding-bottom: 5px;
-  margin-bottom: 5px;
-}
-#amenities-submenu > .items {
-  display: flex;
-  flex-wrap: wrap;
-}
-#amenities-submenu > .items > label {
-  padding: 5px 8px 2px 8px;
-  margin: 5px;
-  user-select: none;
-  cursor: pointer;
-  border-radius: 3px;
-}
-#amenities-submenu > .items > label:hover {
-  background-color: #D5D5D5;
-}
-#amenities-submenu > .items > label > input {
-  margin: 0;
-}
-#amenities-submenu > .confirm {
-  padding-top: 10px;
-  border-top: 1px solid #999;
-  text-align: center;
-}
-#amenities-submenu > .confirm button {
-  width: 120px;
-  cursor: pointer;
-}
 
 #results {
   width: 100%;
   min-height: 100%;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
 }
 #results ul, #results li {
   margin: 0;
@@ -282,7 +229,7 @@ header .status > .bubble.down {
 }
 #results > .none {
   width: 100%;
-  padding: 40px 0;
+  padding: 10px 0;
   text-align: center;
 }
 #results > .listings > .country_group {
@@ -577,6 +524,7 @@ footer {
   flex-wrap: wrap;
   gap: 30px;
   padding: 20px;
+  justify-content: center;
 }
 
 /* Individual card styling */
@@ -720,24 +668,51 @@ footer {
 
 /* desinations */
 
-#destination-filter, #amenities-filter {
-  padding: 20px;
+#destination-filter, #amenities-filter, #amenities-submenu  {
+  padding: 10px;
   background-color: #f9f9f9;
   border-radius: 8px;
   margin: 20px 0;
+  box-sizing: border-box;
+  max-width: 380px; /* Adjust width as needed */
+  margin: 10px ; 
+}
+#destination-filter .title, #amenities-filter .title {
+  font-size: 1.8rem; /* Adjust font size as needed */
+}
+
+#destination-filter .choice, #amenities-filter .choice {
+  font-size: 1.4rem; /* Adjust font size as needed */
 }
 
 .filter-container {
   margin-bottom: 20px;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 20%, rgba(0, 0, 0, 0.2) 80%, rgba(0, 0, 0, 0) 100%);
+  align-items: center; /* Align items vertically if needed */
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(230, 109, 72, 0.699) 20%, rgba(230, 109, 72, 0.699) 80%, rgba(0, 0, 0, 0) 100%);
+  display: flex; /* Use flexbox to arrange items side by side */
+  justify-content: center; /* Distribute space between items */
+  gap: 0px; /* Add some space between the two filters */
+  padding: 10px; /* Add some padding around the container */
 }
 
-#destination-filter-select, #amenities-filter-select {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
+.filter-group {
+  flex: 1; /* Allow each filter group to take up equal space */
 }
+
+.filter-group label {
+  display: ruby-base; /* Make sure the label is on top of the select element */
+  margin-bottom: 1px; /* Add some space between the label and the select element */
+}
+
+.filter-group select {
+  width: 100%; /* Make the select element take up the full width of its container */
+}
+#comfortsFilter {
+padding: 10px;
+font-size: 16px;
+}
+
+
 
 #destination-list {
   display: flex;
@@ -820,12 +795,6 @@ footer {
   transform: translateY(-5px);
 }
 
-.destination-card img,
-.card img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
 
 .destination-card h3,
 .card-title {
@@ -852,25 +821,7 @@ footer {
   background-color: #ff4d4d; 
 }
 
-.filter-container {
-    display: flex; /* Use flexbox to arrange items side by side */
-    justify-content: space-between; /* Distribute space between items */
-    gap: 10px; /* Add some space between the two filters */
-    padding: 10px; /* Add some padding around the container */
-}
 
-.filter-group {
-    flex: 1; /* Allow each filter group to take up equal space */
-}
-
-.filter-group label {
-    display: block; /* Make sure the label is on top of the select element */
-    margin-bottom: 1px; /* Add some space between the label and the select element */
-}
-
-.filter-group select {
-    width: 100%; /* Make the select element take up the full width of its container */
-}
 
 
 /* Style for the checkbox container */
@@ -897,4 +848,103 @@ footer {
 
 #amenities-ok-btn:hover {
   background-color: #0056b3;
+}
+
+#amenities-submenu {
+  display: none;
+}
+
+.modal-content-listing {
+  display: flex;
+  flex-direction: column;
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Adding some shadow */
+  border-radius: 10px; /* Rounded corners */
+  overflow: hidden;
+  font-size: medium;
+}
+
+.top-section {
+  display: flex;
+  width: 100%;
+  flex-direction: row; /* Arrange image and details side by side */
+  margin-bottom: 16px; /* Space between top and bottom sections */
+}
+
+.image-section {
+  flex: 0 0 40%; /* 40% width */
+  margin-right: 16px; /* Space between image and details */
+}
+
+.details-section {
+  flex: 0 0 60%; /* 60% width */
+}
+
+.reviews-section {
+  width: 100%;
+  border-top: 1px solid #ddd; /* Optional: separator line */
+  padding-top: 16px; /* Space above reviews section */
+}
+.review {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+.review h3 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+.review p {
+  margin: 5px 0 0;
+  font-size: 1em;
+  color: #666;
+}
+
+
+/* Additional styling for individual elements */
+.modal-image {
+  width: 100%; /* Ensure the image takes up the full width of its container */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.modal-title, .modal-description, .modal-price, .modal-amenities {
+  margin-bottom: 8px; /* Space between elements */
+}
+
+.close-button {
+  align-self: flex-end;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* CSS for radiant background */
+.homepage-background {
+  /* Set the background image */
+  background-image: url('static/img/img_background.jpeg'), /* Replace with the path to your image */
+                    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)); /* Gradient overlay */
+  background-blend-mode: overlay; /* Blend the image and gradient */
+  background-size: cover; /* Cover the entire background */
+  background-position: center; /* Center the background image */
+  background-repeat: no-repeat; /* Prevent background image from repeating */
+  height: 100vh; /* Full viewport height */
+  width: 100%; /* Full width */
+}
+
+#login-button {
+  float: right;
+  margin-inline-end: 5%;
+  padding: 15px;
+  border: 2px solid black;
+  border-radius: 5px;
+  background-color: #cecec3;
+}
+.login-button {
+  width: -webkit-fill-available;
 }

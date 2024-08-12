@@ -307,6 +307,7 @@ hbnb = {
         // You can replace this with actual authentication logic
         
         alert("Login successful!"); // Replace with your own login logic
+        
 
         // Hide the login button
         let loginButton = document.getElementById("login-button");
@@ -334,17 +335,13 @@ hbnb = {
     },
 
     handleLogout: function() {
-
-        // Remove login state from localStorage
-        localStorage.removeItem('loggedIn');
-
         // Show the login button
         let loginButton = document.getElementById("login-button");
         if (loginButton) {
             loginButton.style.display = 'block';
         }
 
-        // Hide the logout button
+            // Hide the logout button
         let logoutButton = document.getElementById("logout-button");
         if (logoutButton) {
             logoutButton.style.display = 'none';
@@ -364,8 +361,10 @@ hbnb = {
         // Optionally clear any stored user data or session
         alert("Logout successful!");
     },
-    
         
+
+    
+    
     init: function() {
         hbnb.fetchImagesAndHotels(); // Fetch and display hotels on initialization
         hbnb.loginInit(); // Initialize login functionality
